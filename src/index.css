@@ -113,3 +113,15 @@ input[type='checkbox'] {
   cursor: pointer;
   accent-color: #6ea8fe;
 }
+
+.date-display {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  letter-spacing: 0.3px;
+}
+
+.btn-outline-secondary:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}

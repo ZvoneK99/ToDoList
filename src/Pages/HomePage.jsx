@@ -2,6 +2,28 @@ import { useState, useEffect } from 'react'
 import TaskInput from '../Komponente/TaskInput'
 import TaskList from '../Komponente/TaskList'
 import FilterButtons from '../Komponente/FilterButtons'
+import DateNavigator from '../Komponente/DateNavigator'
+
+function toDateKey(date) {
+  const y = date.getFullYear()
+  const m = String(date.getMonth() + 1).padStart(2, '0')
+  const d = String(date.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+
+function buildDateRange() {
+  const dates = []
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  for (let i = 0; i <= 7; i++) {
+    const d = new Date(today)
+    d.setDate(today.getDate() + i)
+    dates.push(toDateKey(d))
+  }
+  return dates
+}
+
+const DATE_RANGE = buildDateRange()
 
 function HomePage() {
   const [tasks, setTasks] = useState(() => {
@@ -9,13 +31,16 @@ function HomePage() {
     return saved ? JSON.parse(saved) : []
   })
   const [filter, setFilter] = useState('All')
+  const [dateIndex, setDateIndex] = useState(0)
+
+  const selectedDate = DATE_RANGE[dateIndex]
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks))
   }, [tasks])
 
   const addTask = (text) => {
-    const newTask = { id: Date.now(), text, completed: false }
+    const newTask = { id: Date.now(), text, completed: false, date: selectedDate }
     setTasks((prev) => [newTask, ...prev])
   }
 
@@ -31,22 +56,33 @@ function HomePage() {
     setTasks((prev) => prev.filter((task) => task.id !== id))
   }
 
-  const filteredTasks = tasks.filter((task) => {
+  const tasksForDay = tasks.filter((task) => task.date === selectedDate)
+
+  const filteredTasks = tasksForDay.filter((task) => {
     if (filter === 'Active') return !task.completed
     if (filter === 'Completed') return task.completed
     return true
   })
 
-  const activeCount = tasks.filter((t) => !t.completed).length
+  const activeCount = tasksForDay.filter((t) => !t.completed).length
 
   return (
     <div className="app-wrapper">
       <h1 className="app-title mb-1">
         Todo<span>List</span>
       </h1>
-      <p className="task-count mb-4">{activeCount} task{activeCount !== 1 ? 's' : ''} remaining</p>
+      <p className="task-count mb-4">
+        {activeCount} task{activeCount !== 1 ? 's' : ''} remaining
+      </p>
 
       <div className="card-dark p-4">
+        <DateNavigator
+          selectedDate={selectedDate}
+          onPrev={() => setDateIndex((i) => i - 1)}
+          onNext={() => setDateIndex((i) => i + 1)}
+          isFirst={dateIndex === 0}
+          isLast={dateIndex === DATE_RANGE.length - 1}
+        />
         <TaskInput onAdd={addTask} />
         <FilterButtons activeFilter={filter} onFilterChange={setFilter} />
         <TaskList
