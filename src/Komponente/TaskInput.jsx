@@ -15,12 +15,12 @@ function TaskInput({ onAdd }) {
       <input
         type="text"
         className="form-control task-input"
-        placeholder="Add a new task..."
+        placeholder="> type new task..."
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <button type="submit" className="btn btn-primary px-4" style={{ borderRadius: '8px', whiteSpace: 'nowrap' }}>
-        Add
+      <button type="submit" className="btn btn-primary px-4" style={{ whiteSpace: 'nowrap' }}>
+        EXEC
       </button>
     </form>
   )

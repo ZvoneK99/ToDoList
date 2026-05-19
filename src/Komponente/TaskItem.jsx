@@ -6,13 +6,18 @@ function TaskItem({ task, onToggle, onDelete }) {
         checked={task.completed}
         onChange={() => onToggle(task.id)}
       />
-      <span className="task-text flex-grow-1">{task.text}</span>
+      <span className="task-text flex-grow-1">
+        <span style={{ opacity: 0.4, marginRight: '8px' }}>
+          {task.completed ? '//' : '▸'}
+        </span>
+        {task.text}
+      </span>
       <button
         className="btn-delete"
         onClick={() => onDelete(task.id)}
         title="Delete task"
       >
-        ✕
+        [X]
       </button>
     </div>
   )

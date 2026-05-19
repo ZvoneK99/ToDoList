@@ -4,7 +4,7 @@ function TaskList({ tasks, onToggle, onDelete }) {
   if (tasks.length === 0) {
     return (
       <div className="text-center py-5 empty-state">
-        <p>No tasks here.</p>
+        <p>// NO TASKS FOUND</p>
       </div>
     )
   }

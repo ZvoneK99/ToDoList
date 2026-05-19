@@ -68,12 +68,16 @@ function HomePage() {
 
   return (
     <div className="app-wrapper">
-      <h1 className="app-title mb-1">
-        Todo<span>List</span>
-      </h1>
-      <p className="task-count mb-4">
-        {activeCount} task{activeCount !== 1 ? 's' : ''} remaining
-      </p>
+      <div className="mb-4">
+        <p className="task-count mb-2">&gt; SYSTEM READY_</p>
+        <h1 className="app-title">
+          TASK<span>/</span>LIST
+        </h1>
+        <p className="task-count mt-2">
+          &gt; {activeCount} task{activeCount !== 1 ? 's' : ''} pending
+          <span className="cursor">_</span>
+        </p>
+      </div>
 
       <div className="card-dark p-4">
         <DateNavigator
@@ -83,6 +87,7 @@ function HomePage() {
           isFirst={dateIndex === 0}
           isLast={dateIndex === DATE_RANGE.length - 1}
         />
+        <hr className="section-divider" />
         <TaskInput onAdd={addTask} />
         <FilterButtons activeFilter={filter} onFilterChange={setFilter} />
         <TaskList

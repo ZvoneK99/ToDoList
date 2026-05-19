@@ -1,3 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --neon: #00ff41;
+  --neon-dim: rgba(0, 255, 65, 0.12);
+  --neon-glow: 0 0 6px #00ff41, 0 0 20px rgba(0, 255, 65, 0.5), 0 0 40px rgba(0, 255, 65, 0.2);
+  --red: #ff3c5a;
+  --bg: #000000;
+  --surface: #050505;
+  --border: #0a2a0a;
+  --text: #00cc33;
+  --text-bright: #00ff41;
+  --muted: #1a4a1a;
+}
+
+/* ── Animations ── */
+
+@keyframes glitch {
+  0%, 80%, 100% {
+    text-shadow: var(--neon-glow);
+    transform: translate(0);
+  }
+  81% {
+    text-shadow: -3px 0 #ff00ff, 3px 0 #00ffff;
+    transform: translate(-3px, 0) skewX(-2deg);
+  }
+  82% {
+    text-shadow: 3px 0 #ff00ff, -3px 0 #00ffff;
+    transform: translate(3px, 0) skewX(2deg);
+  }
+  83% {
+    text-shadow: -2px 0 #ff00ff, 2px 2px #00ffff;
+    transform: translate(-2px, 1px);
+  }
+  84% {
+    text-shadow: var(--neon-glow);
+    transform: translate(0);
+  }
+  92% {
+    text-shadow: 2px 0 #ff00ff, -1px 0 #00ffff;
+    transform: translate(2px, -1px) skewX(1deg);
+  }
+  93% {
+    text-shadow: var(--neon-glow);
+    transform: translate(0);
+  }
+}
+
+@keyframes neon-pulse {
+  0%, 100% {
+    box-shadow: 6px 6px 0px var(--neon), 0 0 20px rgba(0, 255, 65, 0.15);
+  }
+  50% {
+    box-shadow: 6px 6px 0px var(--neon), 0 0 40px rgba(0, 255, 65, 0.35), 0 0 80px rgba(0, 255, 65, 0.1);
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes scan {
+  0% { top: -10px; }
+  100% { top: 100vh; }
+}
+
+@keyframes flicker {
+  0%, 97%, 100% { opacity: 1; }
+  98% { opacity: 0.6; }
+  99% { opacity: 1; }
+  99.5% { opacity: 0.4; }
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -5,123 +79,312 @@
 }
 
 body {
-  background-color: #121212;
-  color: #e0e0e0;
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(0, 255, 65, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 65, 0.025) 1px, transparent 1px);
+  background-size: 32px 32px;
+  color: var(--text);
   min-height: 100vh;
-  font-family: 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Share Tech Mono', 'Space Mono', monospace;
+  animation: flicker 8s infinite;
+}
+
+/* Scan-line overlay */
+body::before {
+  content: '';
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(
+    transparent,
+    rgba(0, 255, 65, 0.12),
+    transparent
+  );
+  animation: scan 5s linear infinite;
+  z-index: 9998;
+  pointer-events: none;
+}
+
+/* CRT scanlines */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0, 0, 0, 0.08) 3px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
 }
 
 #root {
   width: 100%;
 }
 
-.app-wrapper {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 2.5rem 1rem;
+/* ── Layout ── */
+#root {
+  width: 100%;
 }
 
+.app-wrapper {
+  max-width: 660px;
+  margin: 0 auto;
+  padding: 3rem 1.25rem 4rem;
+}
+
+/* ── Title ── */
 .app-title {
-  font-size: 2.2rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: #ffffff;
+  font-size: 3.2rem;
+  font-weight: 400;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--text-bright);
+  line-height: 1;
+  animation: glitch 6s infinite;
+  text-shadow: var(--neon-glow);
 }
 
 .app-title span {
-  color: #6ea8fe;
+  color: var(--text-bright);
+  opacity: 0.5;
 }
 
+.task-count {
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.cursor {
+  display: inline-block;
+  color: var(--neon);
+  animation: blink 1s step-end infinite;
+  text-shadow: var(--neon-glow);
+  margin-left: 2px;
+}
+
+/* ── Card ── */
 .card-dark {
-  background-color: #1e1e1e;
-  border: 1px solid #2e2e2e;
-  border-radius: 12px;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  animation: neon-pulse 3s ease-in-out infinite;
 }
 
+/* ── Input ── */
 .task-input {
-  background-color: #2a2a2a !important;
-  border: 1px solid #3a3a3a !important;
-  color: #e0e0e0 !important;
-  border-radius: 8px !important;
+  background-color: var(--bg) !important;
+  border: 1px solid var(--border) !important;
+  border-left: 3px solid var(--neon) !important;
+  border-radius: 0 !important;
+  color: var(--text-bright) !important;
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.95rem !important;
+  padding: 10px 14px !important;
+  letter-spacing: 1px !important;
+  transition: border-color 0.15s, box-shadow 0.15s !important;
 }
 
 .task-input:focus {
-  border-color: #6ea8fe !important;
-  box-shadow: 0 0 0 0.2rem rgba(110, 168, 254, 0.2) !important;
+  border-color: var(--neon) !important;
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.2), inset 0 0 8px rgba(0, 255, 65, 0.04) !important;
 }
 
 .task-input::placeholder {
-  color: #666 !important;
+  color: var(--muted) !important;
+  letter-spacing: 1px !important;
 }
 
+/* ── Add button ── */
+.btn-primary {
+  background-color: transparent !important;
+  border: 1px solid var(--neon) !important;
+  border-radius: 0 !important;
+  color: var(--neon) !important;
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.85rem !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 6px var(--neon) !important;
+  transition: all 0.15s !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--neon-dim) !important;
+  box-shadow: 0 0 16px rgba(0, 255, 65, 0.3), inset 0 0 8px rgba(0, 255, 65, 0.05) !important;
+  color: var(--neon) !important;
+}
+
+.btn-primary:active {
+  transform: scale(0.97) !important;
+}
+
+/* ── Filter buttons ── */
+.filter-btn {
+  border-radius: 0 !important;
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.75rem !important;
+  letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  padding: 5px 14px !important;
+  transition: all 0.15s !important;
+}
+
+.btn-outline-secondary {
+  border-color: var(--border) !important;
+  color: var(--muted) !important;
+  background: transparent !important;
+}
+
+.btn-outline-secondary:hover:not(:disabled) {
+  border-color: var(--neon) !important;
+  color: var(--neon) !important;
+  background: var(--neon-dim) !important;
+  text-shadow: 0 0 6px var(--neon) !important;
+}
+
+.btn-primary.filter-btn {
+  background-color: var(--neon-dim) !important;
+  border-color: var(--neon) !important;
+  color: var(--neon) !important;
+  text-shadow: 0 0 6px var(--neon) !important;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.15) !important;
+}
+
+/* ── Task items ── */
 .task-item {
-  background-color: #252525;
-  border: 1px solid #303030;
-  border-radius: 10px;
-  transition: background-color 0.2s;
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--muted);
+  border-radius: 0;
+  transition: border-color 0.15s, transform 0.1s, box-shadow 0.15s;
 }
 
 .task-item:hover {
-  background-color: #2c2c2c;
+  border-color: var(--neon);
+  border-left-color: var(--neon);
+  transform: translateX(4px);
+  box-shadow: 0 0 12px rgba(0, 255, 65, 0.1);
+}
+
+.task-item.completed {
+  border-color: #0a0a0a;
+  border-left-color: #111;
+  opacity: 0.4;
 }
 
 .task-item.completed .task-text {
   text-decoration: line-through;
-  color: #666;
+  color: var(--muted);
 }
 
 .task-text {
-  font-size: 1rem;
+  font-size: 0.9rem;
   word-break: break-word;
+  letter-spacing: 1px;
+  color: var(--text);
 }
 
+/* ── Delete button ── */
 .btn-delete {
   background: none;
-  border: none;
-  color: #888;
-  font-size: 1.1rem;
-  padding: 4px 8px;
-  border-radius: 6px;
+  border: 1px solid transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-family: 'Share Tech Mono', monospace;
+  letter-spacing: 1px;
+  padding: 3px 8px;
   cursor: pointer;
-  transition: color 0.2s, background-color 0.2s;
+  transition: all 0.15s;
+  border-radius: 0;
 }
 
 .btn-delete:hover {
-  color: #ff6b6b;
-  background-color: rgba(255, 107, 107, 0.1);
+  color: var(--red);
+  border-color: var(--red);
+  text-shadow: 0 0 8px var(--red);
+  background-color: rgba(255, 60, 90, 0.06);
 }
 
-.filter-btn {
-  border-radius: 20px !important;
-  font-size: 0.85rem !important;
-  padding: 5px 16px !important;
-}
-
-.empty-state {
-  color: #555;
-  font-size: 0.95rem;
-}
-
-.task-count {
-  font-size: 0.82rem;
-  color: #666;
-}
-
-input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #6ea8fe;
-}
-
+/* ── Date navigator ── */
 .date-display {
-  font-size: 1rem;
-  font-weight: 600;
-  color: #e0e0e0;
-  letter-spacing: 0.3px;
+  font-size: 0.9rem;
+  color: var(--text-bright);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
 }
 
-.btn-outline-secondary:disabled {
-  opacity: 0.2;
-  cursor: not-allowed;
+.date-nav-btn {
+  background: transparent !important;
+  border: 1px solid var(--border) !important;
+  color: var(--muted) !important;
+  border-radius: 0 !important;
+  font-size: 1rem !important;
+  line-height: 1 !important;
+  padding: 6px 16px !important;
+  font-family: 'Share Tech Mono', monospace !important;
+  letter-spacing: 1px !important;
+  transition: all 0.15s !important;
+}
+
+.date-nav-btn:hover:not(:disabled) {
+  border-color: var(--neon) !important;
+  color: var(--neon) !important;
+  text-shadow: 0 0 6px var(--neon) !important;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.15) !important;
+}
+
+.date-nav-btn:disabled {
+  opacity: 0.1 !important;
+  cursor: not-allowed !important;
+}
+
+/* ── Today badge ── */
+.badge.bg-primary {
+  background-color: transparent !important;
+  color: var(--neon) !important;
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 0.6rem !important;
+  letter-spacing: 3px !important;
+  text-transform: uppercase !important;
+  border-radius: 0 !important;
+  border: 1px solid var(--neon) !important;
+  padding: 2px 8px !important;
+  text-shadow: 0 0 6px var(--neon) !important;
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.2) !important;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+}
+
+/* ── Divider ── */
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1rem 0;
+}
+
+/* ── Checkbox ── */
+input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--neon);
+  border-radius: 0;
 }
